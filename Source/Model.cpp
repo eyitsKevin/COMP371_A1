@@ -127,8 +127,13 @@ glm::mat4 Model::GetWorldMatrix() const
 	mat4 worldMatrix(1.0f);
     
     //TRS
-    return glm::translate(worldMatrix, GetPosition()) * glm::scale(worldMatrix, GetScaling()) * glm::rotate(worldMatrix, glm::radians(GetRotationAngle()), GetRotationAxis());
-    
+    if(mAnimation != NULL) {
+        return mAnimation -> GetAnimationWorldMatrix();
+    } else {
+        return glm::translate(worldMatrix, GetPosition()) * glm::scale(worldMatrix, GetScaling()) * glm::rotate(worldMatrix, glm::radians(GetRotationAngle()), GetRotationAxis());
+    }
+
+
 }
 
 void Model::SetPosition(glm::vec3 position)
