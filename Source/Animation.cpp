@@ -239,8 +239,8 @@ glm::mat4 Animation::GetAnimationWorldMatrix() const
             vec3 translation = glm::mix(mKey[lowerBound].GetPosition(), mKey[upperBound].GetPosition(), delta);
             vec3 scaling = glm::mix(mKey[lowerBound].GetScaling(), mKey[upperBound].GetScaling(), delta);
             
-            quat qLowerBound = angleAxis(mKey[lowerBound].GetRotationAngle(), mKey[lowerBound].GetRotationAxis());
-            quat qUpperBound = angleAxis(mKey[upperBound].GetRotationAngle(), mKey[upperBound].GetRotationAxis());
+            quat qLowerBound = angleAxis(glm::radians(mKey[lowerBound].GetRotationAngle()), mKey[lowerBound].GetRotationAxis());
+            quat qUpperBound = angleAxis(glm::radians(mKey[upperBound].GetRotationAngle()), mKey[upperBound].GetRotationAxis());
             
             quat rotation = glm::slerp(qLowerBound, qUpperBound, delta);
             mat4 RotationMatrix = glm::mat4_cast(rotation);
