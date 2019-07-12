@@ -122,17 +122,16 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 
 glm::mat4 Model::GetWorldMatrix() const
 {
-	// @TODO 2 - You must build the world matrix from the position, scaling and rotation informations
+    // @TODO 2 - You must build the world matrix from the position, scaling and rotation informations
     //           If the model has an animation, get the world transform from the animation.
-	mat4 worldMatrix(1.0f);
+    mat4 worldMatrix(1.0f);
     
     //TRS
     if(mAnimation != NULL) {
         return mAnimation -> GetAnimationWorldMatrix();
     } else {
-        return glm::translate(worldMatrix, GetPosition()) * glm::scale(worldMatrix, GetScaling()) * glm::rotate(worldMatrix, glm::radians(GetRotationAngle()), GetRotationAxis());
+        return glm::translate(worldMatrix, GetPosition()) * glm::rotate(worldMatrix, glm::radians(GetRotationAngle()), GetRotationAxis()) * glm::scale(worldMatrix, GetScaling());
     }
-
 
 }
 
