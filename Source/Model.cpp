@@ -10,6 +10,9 @@
 #include "Model.h"
 #include "Animation.h"
 #include "World.h"
+#include "ParticleEmitter.h"
+#include "ParticleDescriptor.h"
+#include "ParticleSystem.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
 
@@ -83,7 +86,7 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 		}
 		else if (token[0] == "rotation")
 		{
-			assert(token.size() > 5);
+			assert(token.size() > 4);
 			assert(token[1] == "=");
 
 			mRotationAxis.x = static_cast<float>(atof(token[2].c_str()));
@@ -111,6 +114,19 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
             
             mAnimation = World::GetInstance()->FindAnimation(animName);
 		}
+        else if (token[0] == "particleemitter")
+        {
+            assert(token.size() > 2);
+            assert(token[1] == "=");
+
+            ParticleDescriptor* desc = World::GetInstance()->FindParticleDescriptor(token[2]);
+            assert(desc != nullptr);
+            
+            ParticleEmitter* emitter = new ParticleEmitter(vec3(0.0f, 0.0f, 0.0f), this);
+            
+            ParticleSystem* ps = new ParticleSystem(emitter, desc);
+            World::GetInstance()->AddParticleSystem(ps);
+        }
 		else
 		{
 			return false;
@@ -122,17 +138,27 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 
 glm::mat4 Model::GetWorldMatrix() const
 {
-    // @TODO 2 - You must build the world matrix from the position, scaling and rotation informations
+	// @TODO 2 - You must build the world matrix from the position, scaling and rotation informations
     //           If the model has an animation, get the world transform from the animation.
-    mat4 worldMatrix(1.0f);
-    
-    //TRS
-    if(mAnimation != NULL) {
-        return mAnimation -> GetAnimationWorldMatrix();
-    } else {
-        return glm::translate(worldMatrix, GetPosition()) * glm::rotate(worldMatrix, glm::radians(GetRotationAngle()), GetRotationAxis()) * glm::scale(worldMatrix, GetScaling());
-    }
+	mat4 worldMatrix(1.0f);
 
+    // Solution TRS
+#if 1
+    if (mAnimation)
+    {
+        // Get world transform from animation key frames / current time
+        worldMatrix = mAnimation->GetAnimationWorldMatrix();
+    }
+    else
+    {
+        mat4 t = glm::translate(mat4(1.0f), mPosition);
+        mat4 r = glm::rotate(mat4(1.0f), glm::radians(mRotationAngleInDegrees), mRotationAxis);
+        mat4 s = glm::scale(mat4(1.0f), mScaling);
+        worldMatrix = t * r * s;
+    }
+#endif
+    
+	return worldMatrix;
 }
 
 void Model::SetPosition(glm::vec3 position)

@@ -130,7 +130,8 @@ void Animation::Draw()
     GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
     glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &mat4(1.0f)[0][0]);
     
-    glDrawArrays(GL_LINE_LOOP, 0, (float) mKey.size());
+    // Draw the triangles !
+    glDrawArrays(GL_LINE_LOOP, 0, (float) mKey.size()); // 36 vertices: 3 * 2 * 6 (3 per triangle, 2 triangles per face, 6 faces)
 }
 
 
@@ -239,8 +240,8 @@ glm::mat4 Animation::GetAnimationWorldMatrix() const
             vec3 translation = glm::mix(mKey[lowerBound].GetPosition(), mKey[upperBound].GetPosition(), delta);
             vec3 scaling = glm::mix(mKey[lowerBound].GetScaling(), mKey[upperBound].GetScaling(), delta);
             
-            quat qLowerBound = angleAxis(glm::radians(mKey[lowerBound].GetRotationAngle()),glm::normalize(mKey[lowerBound].GetRotationAxis()));
-            quat qUpperBound = angleAxis(glm::radians(mKey[upperBound].GetRotationAngle()),glm::normalize(mKey[upperBound].GetRotationAxis()));
+            quat qLowerBound = angleAxis(mKey[lowerBound].GetRotationAngle(), mKey[lowerBound].GetRotationAxis());
+            quat qUpperBound = angleAxis(mKey[upperBound].GetRotationAngle(), mKey[upperBound].GetRotationAxis());
             
             quat rotation = glm::slerp(qLowerBound, qUpperBound, delta);
             mat4 RotationMatrix = glm::mat4_cast(rotation);

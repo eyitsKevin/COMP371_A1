@@ -69,7 +69,7 @@ void Renderer::Initialize()
     
 	// Loading Shaders
 #if defined(PLATFORM_OSX)
-    std::string shaderPathPrefix = "Shaders/";
+    std::string shaderPathPrefix = "/Users/kevinluu/Google Drive/Concordia/Semester 7 - Summer 2019/COMP 371/Assignment/A1/Framework/Assets/Shaders/";
 #else
     std::string shaderPathPrefix = "../Assets/Shaders/";
 #endif
@@ -87,6 +87,11 @@ void Renderer::Initialize()
                             shaderPathPrefix + "BlueColor.fragmentshader")
                                );
     
+    sShaderProgramID.push_back(
+                               LoadShaders(shaderPathPrefix + "Texture.vertexshader",
+                                           shaderPathPrefix + "Texture.fragmentshader")
+                               );
+
 	sCurrentShader = 0;
 
 }
