@@ -114,9 +114,25 @@ void ParticleSystem::Update(float dt)
                 
         
         // ...
-        p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
-        // ...
+        float delta;
         
+            p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
+            
+            if (p -> currentTime <= mpDescriptor -> fadeInTime) {
+                delta = (p -> currentTime - 0/(mpDescriptor -> fadeInTime - 0));
+                p->billboard.color = glm::mix(mpDescriptor -> initialColor, mpDescriptor -> midColor, delta);
+            } else if (p-> currentTime <= mpDescriptor -> totalLifetime - mpDescriptor -> fadeOutTime ) {
+                delta = (p -> currentTime - mpDescriptor -> fadeInTime/((mpDescriptor -> totalLifetime - mpDescriptor -> fadeOutTime) - mpDescriptor -> fadeInTime));
+                p->billboard.color = glm::mix(mpDescriptor -> initialColor, mpDescriptor -> midColor, delta);
+
+            } else {
+                delta = (p -> currentTime - (mpDescriptor -> totalLifetime - mpDescriptor->fadeOutTime)/(mpDescriptor -> totalLifetime - (mpDescriptor -> totalLifetime - mpDescriptor -> fadeOutTime)));
+                p->billboard.color = glm::mix(mpDescriptor -> initialColor, mpDescriptor -> midColor, delta);
+            }
+            // ...
+        p->velocity += mpDescriptor->acceleration * dt;
+        p->billboard.size += mpDescriptor->sizeGrowthVelocity * dt;
+
         // Do not touch code below...
         
         // Particles are destroyed if expired

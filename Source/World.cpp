@@ -55,21 +55,28 @@ World::World()
 
     mpBillboardList = new BillboardList(2048, billboardTextureID);
 
-    
     // TODO - You can un-comment out these 2 temporary billboards and particle system
     // That can help you debug billboards, you can set the billboard texture to billboardTest.png
-     Billboard *b = new Billboard();
-     b->size  = glm::vec2(2.0, 2.0);
-     b->position = glm::vec3(0.0, 3.0, 0.0);
-     b->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-     
-     Billboard *b2 = new Billboard();
-     b2->size  = glm::vec2(2.0, 2.0);
-     b2->position = glm::vec3(0.0, 3.0, 1.0);
-     b2->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-     mpBillboardList->AddBillboard(b);
-     mpBillboardList->AddBillboard(b2);
+//    o A billboard includes a position (center), a color, a size, an angle and a color.
+//    o A billboard renders with two triangles, 6 vertices in total, always facing the camera.
+//    o You can extract the camera basis vectors from the view matrix, rotate these vectors by
+//    the angle of the billboard along 𝑙ookat, offset vertices from center by half the size of
+//    the billboard along the rotated right and up vectors.
+//    o Billboards also include a normal that will later be used for lighting. It must be facing
+//        towards the camera.
+//     Billboard *b = new Billboard();
+//     b->size  = glm::vec2(2.0, 2.0);
+//     b->position = glm::vec3(0.0, 3.0, 0.0);
+//     b->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//     b->angle = 100.f;
+//    
+//     Billboard *b2 = new Billboard();
+//     b2->size  = glm::vec2(2.0, 2.0);
+//     b2->position = glm::vec3(0.0, 3.0, 1.0);
+//     b2->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//
+//     mpBillboardList->AddBillboard(b);
+//     mpBillboardList->AddBillboard(b2);
         // TMP
 }
 
