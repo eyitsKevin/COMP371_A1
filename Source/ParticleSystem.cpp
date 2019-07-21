@@ -90,7 +90,12 @@ void ParticleSystem::Update(float dt)
         //          mpDescriptor->velocityAngleRandomness.
         // Step 2 : You can rotate the result in step 1 by an random angle from 0 to
         //          360 degrees about the original velocity vector
+        float randomNumber = EventManager::GetRandomFloat(0, mpDescriptor->velocityAngleRandomness);
+        mat4 r = glm::rotate(mat4(1.0f), glm::radians(randomNumber), vec3(1.0f,1.0f,1.0f));
+        vec4 newVector = vec4(newParticle->velocity,0);
 
+        r = glm::rotate(mat4(1.0f), glm::radians(EventManager::GetRandomFloat(0, 360)), glm::normalize(newParticle->velocity));
+        newParticle->velocity = glm::vec3(r*newVector);
         // ...
     }
     
@@ -116,19 +121,19 @@ void ParticleSystem::Update(float dt)
         // ...
         float delta;
         
-            p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
+        p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
+        
+        if (p->currentTime <= mpDescriptor->fadeInTime) {
+            delta = ((p->currentTime - 0)/(mpDescriptor->fadeInTime - 0));
+            p->billboard.color = glm::mix(mpDescriptor->initialColor, mpDescriptor->midColor, delta);
+        } else if (p->currentTime <= mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime ) {
+            delta = (p -> currentTime - mpDescriptor -> fadeInTime/((mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime) - mpDescriptor->fadeInTime));
+            p->billboard.color = glm::mix(mpDescriptor -> initialColor, mpDescriptor -> midColor, delta);
             
-            if (p -> currentTime <= mpDescriptor -> fadeInTime) {
-                delta = (p -> currentTime - 0/(mpDescriptor -> fadeInTime - 0));
-                p->billboard.color = glm::mix(mpDescriptor -> initialColor, mpDescriptor -> midColor, delta);
-            } else if (p-> currentTime <= mpDescriptor -> totalLifetime - mpDescriptor -> fadeOutTime ) {
-                delta = (p -> currentTime - mpDescriptor -> fadeInTime/((mpDescriptor -> totalLifetime - mpDescriptor -> fadeOutTime) - mpDescriptor -> fadeInTime));
-                p->billboard.color = glm::mix(mpDescriptor -> initialColor, mpDescriptor -> midColor, delta);
-
-            } else {
-                delta = (p -> currentTime - (mpDescriptor -> totalLifetime - mpDescriptor->fadeOutTime)/(mpDescriptor -> totalLifetime - (mpDescriptor -> totalLifetime - mpDescriptor -> fadeOutTime)));
-                p->billboard.color = glm::mix(mpDescriptor -> initialColor, mpDescriptor -> midColor, delta);
-            }
+        } else {
+            delta = ((p->currentTime - (mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime))/(mpDescriptor->totalLifetime - (mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime)));
+            p->billboard.color = glm::mix(mpDescriptor->initialColor, mpDescriptor->midColor, delta);
+        }
             // ...
         p->velocity += mpDescriptor->acceleration * dt;
         p->billboard.size += mpDescriptor->sizeGrowthVelocity * dt;
