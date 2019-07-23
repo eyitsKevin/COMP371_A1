@@ -177,39 +177,39 @@ void BillboardList::Update(float dt)
         
         
         // Normals
-        mVertexBuffer[firstVertexIndex].normal = mVertexBuffer[firstVertexIndex + 1].normal = mVertexBuffer[firstVertexIndex +2].normal = mVertexBuffer[firstVertexIndex + 3].normal = mVertexBuffer[firstVertexIndex + 4].normal = mVertexBuffer[firstVertexIndex + 5].normal = vec3(mLookAt[0], mLookAt[1], mLookAt[2]); // wrong...
+        mVertexBuffer[firstVertexIndex].normal = mVertexBuffer[firstVertexIndex + 1].normal = mVertexBuffer[firstVertexIndex +2].normal = mVertexBuffer[firstVertexIndex + 3].normal = mVertexBuffer[firstVertexIndex + 4].normal = mVertexBuffer[firstVertexIndex + 5].normal = glm::normalize(vec3(mLookAt[0], mLookAt[1], mLookAt[2])); // wrong...
         
         // First triangle
         // Top left
-        mVertexBuffer[firstVertexIndex].position.x = b->position.x + 0.5f*b->size.x/2 * (-rright[0] + rup[0]);
-        mVertexBuffer[firstVertexIndex].position.y = b->position.y + 0.5f*b->size.y/2 * (-rright[1] + rup[1]);
-        mVertexBuffer[firstVertexIndex].position.z = b->position.z + 0.5f*b->size.x/2 * (-rright[2] + rup[2]);
+        mVertexBuffer[firstVertexIndex].position.x = b->position.x + 0.5f*b->size.x * (-rright[0] + rup[0])/2;
+        mVertexBuffer[firstVertexIndex].position.y = b->position.y + 0.5f*b->size.y * (-rright[1] + rup[1])/2;
+        mVertexBuffer[firstVertexIndex].position.z = b->position.z + 0.5f*b->size.x * (-rright[2] + rup[2])/2;
         
         // Bottom Left
-        mVertexBuffer[firstVertexIndex + 1].position.x = b->position.x + 0.5f*b->size.x/2 * (-rright[0] - rup[0]);
-        mVertexBuffer[firstVertexIndex + 1].position.y = b->position.y + 0.5f*b->size.y/2 * (-rright[1] - rup[1]);
-        mVertexBuffer[firstVertexIndex + 1].position.z = b->position.z + 0.5f*b->size.x/2 * (-rright[2] - rup[2]);
+        mVertexBuffer[firstVertexIndex + 1].position.x = b->position.x + 0.5f*b->size.x * (-rright[0] - rup[0])/2;
+        mVertexBuffer[firstVertexIndex + 1].position.y = b->position.y + 0.5f*b->size.y * (-rright[1] - rup[1])/2;
+        mVertexBuffer[firstVertexIndex + 1].position.z = b->position.z + 0.5f*b->size.x * (-rright[2] - rup[2])/2;
         
         // Top Right
-        mVertexBuffer[firstVertexIndex + 2].position.x = b->position.x + 0.5f*b->size.x/2 * (rright[0] + rup[0]);
-        mVertexBuffer[firstVertexIndex + 2].position.y = b->position.y + 0.5f*b->size.y/2 * (rright[1] + rup[1]);
-        mVertexBuffer[firstVertexIndex + 2].position.z = b->position.z + 0.5f*b->size.x/2 * (rright[2] + rup[2]);
+        mVertexBuffer[firstVertexIndex + 2].position.x = b->position.x + 0.5f*b->size.x * (rright[0] + rup[0])/2;
+        mVertexBuffer[firstVertexIndex + 2].position.y = b->position.y + 0.5f*b->size.y * (rright[1] + rup[1])/2;
+        mVertexBuffer[firstVertexIndex + 2].position.z = b->position.z + 0.5f*b->size.x * (rright[2] + rup[2])/2;
         
         // Second Triangle
         // Top Right
-        mVertexBuffer[firstVertexIndex + 3].position.x = b->position.x + 0.5f*b->size.x/2 * (rright[0] + rup[0]);
-        mVertexBuffer[firstVertexIndex + 3].position.y = b->position.y + 0.5f*b->size.y/2 * (rright[1] + rup[1]);
-        mVertexBuffer[firstVertexIndex + 3].position.z = b->position.z + 0.5f*b->size.y/2 * (rright[2] + rup[2]);
+        mVertexBuffer[firstVertexIndex + 3].position.x = b->position.x + 0.5f*b->size.x * (rright[0] + rup[0])/2;
+        mVertexBuffer[firstVertexIndex + 3].position.y = b->position.y + 0.5f*b->size.y * (rright[1] + rup[1])/2;
+        mVertexBuffer[firstVertexIndex + 3].position.z = b->position.z + 0.5f*b->size.y * (rright[2] + rup[2])/2;
         
         // Bottom Left
-        mVertexBuffer[firstVertexIndex + 4].position.x = b->position.x + 0.5f*b->size.x/2 * (-rright[0] - rup[0]);
-        mVertexBuffer[firstVertexIndex + 4].position.y = b->position.y + 0.5f*b->size.y/2 * (-rright[1] - rup[1]);
-        mVertexBuffer[firstVertexIndex + 4].position.z = b->position.z + 0.5f*b->size.y/2 * (-rright[2] - rup[2]);
+        mVertexBuffer[firstVertexIndex + 4].position.x = b->position.x + 0.5f*b->size.x * (-rright[0] - rup[0])/2;
+        mVertexBuffer[firstVertexIndex + 4].position.y = b->position.y + 0.5f*b->size.y * (-rright[1] - rup[1])/2;
+        mVertexBuffer[firstVertexIndex + 4].position.z = b->position.z + 0.5f*b->size.y * (-rright[2] - rup[2])/2;
         
         // Bottom Right
-        mVertexBuffer[firstVertexIndex + 5].position.x = b->position.x + 0.5f*b->size.x/2 * (rright[0] - rup[0]);
-        mVertexBuffer[firstVertexIndex + 5].position.y = b->position.y + 0.5f*b->size.y/2 * (rright[1] - rup[1]);
-        mVertexBuffer[firstVertexIndex + 5].position.z = b->position.z + 0.5f*b->size.y/2 * (rright[2] - rup[2]);
+        mVertexBuffer[firstVertexIndex + 5].position.x = b->position.x + 0.5f*b->size.x * (rright[0] - rup[0])/2;
+        mVertexBuffer[firstVertexIndex + 5].position.y = b->position.y + 0.5f*b->size.y * (rright[1] - rup[1])/2;
+        mVertexBuffer[firstVertexIndex + 5].position.z = b->position.z + 0.5f*b->size.y * (rright[2] - rup[2])/2;
 
         
         // do not touch this...

@@ -45,8 +45,8 @@ World::World()
 
     
 #if defined(PLATFORM_OSX)
-    int billboardTextureID = TextureLoader::LoadTexture("/Users/kevinluu/Google Drive/Concordia/Semester 7 - Summer 2019/COMP 371/Assignment/A1/Framework/Assets/Textures/BillboardTest.bmp");
-//    int billboardTextureID = TextureLoader::LoadTexture("/Users/kevinluu/Google Drive/Concordia/Semester 7 - Summer 2019/COMP 371/Assignment/A1/Framework/Assets/Textures/Particle.png");
+//    int billboardTextureID = TextureLoader::LoadTexture("/Users/kevinluu/Google Drive/Concordia/Semester 7 - Summer 2019/COMP 371/Assignment/A1/Framework/Assets/Textures/BillboardTest.bmp");
+    int billboardTextureID = TextureLoader::LoadTexture("/Users/kevinluu/Google Drive/Concordia/Semester 7 - Summer 2019/COMP 371/Assignment/A1/Framework/Assets/Textures/Particle.png");
 #else
 //    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
     int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");

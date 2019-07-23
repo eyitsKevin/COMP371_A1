@@ -30,6 +30,10 @@ glm::vec3 ParticleEmitter::GetPosition()
     // If the emitter is parented, the position is relative to its parent
 
     glm::vec3 position = mPosition;
+    
+    if (mpParent != NULL) {
+        position = glm::vec3(mpParent->GetWorldMatrix() * vec4(position, 1));
+    }
 
     // ...
     
