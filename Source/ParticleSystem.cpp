@@ -38,26 +38,26 @@ ParticleSystem::ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* des
 
 ParticleSystem::~ParticleSystem()
 {
-	for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); ++it)
-	{
+    for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); ++it)
+    {
         World::GetInstance()->RemoveBillboard(&(*it)->billboard);
-		delete *it;
-	}
-
+        delete *it;
+    }
+    
     for (std::list<Particle*>::iterator it = mInactiveParticles.begin(); it != mInactiveParticles.end(); ++it)
     {
         delete *it;
     }
     
     mParticleList.resize(0);
-	mInactiveParticles.resize(0);
+    mInactiveParticles.resize(0);
 }
 
 void ParticleSystem::Update(float dt)
 {
     // Emit particle according to the emission rate
     float averageTimeBetweenEmission = 1.0f / mpDescriptor->emissionRate;
-//    float randomValue = EventManager::GetRandomFloat(0.0f, averageTimeBetweenEmission);
+    //    float randomValue = EventManager::GetRandomFloat(0.0f, averageTimeBetweenEmission);
     timeSinceLastParticleEmitted += dt;
     
     if (timeSinceLastParticleEmitted > averageTimeBetweenEmission && mInactiveParticles.size() > 0)
@@ -79,7 +79,7 @@ void ParticleSystem::Update(float dt)
         newParticle->currentTime = 0.0f;
         newParticle->lifeTime = mpDescriptor->totalLifetime + mpDescriptor->totalLifetimeRandomness * EventManager::GetRandomFloat(-1.0f, 1.0f);
         newParticle->velocity = mpDescriptor->velocity;
-
+        
         newParticle->billboard.angle = mpDescriptor->initialRotationAngle + EventManager::GetRandomFloat(0.0f, mpDescriptor->initialRotationAngleRandomness);
         
         // @TODO 7 - Initial Random Particle Velocity vector
@@ -92,13 +92,14 @@ void ParticleSystem::Update(float dt)
         //          360 degrees about the original velocity vector
         
         
-        float randomAngleRandom = EventManager::GetRandomFloat(0, mpDescriptor->velocityAngleRandomness);
+        float randomAngleRandom = EventManager::GetRandomFloat(0.0f, mpDescriptor->velocityAngleRandomness);
         
         mat4 r = glm::rotate(mat4(1.0f), glm::radians(randomAngleRandom), vec3(1.0f,1.0f,1.0f));
         vec3 newVector = glm::vec3(r * vec4(newParticle->velocity,0));
+
+        r = glm::rotate(mat4(1.0f),glm::radians(EventManager::GetRandomFloat(0.0f, 360.0f)),glm::normalize(newVector));
         
-        r = glm::rotate(mat4(1.0f),glm::radians(EventManager::GetRandomFloat(0, 360.0)),glm::normalize(newVector));
-        newParticle -> velocity = glm::vec3(r * vec4(newVector,0));
+        newParticle->velocity = glm::vec3(r * vec4(newVector,0));
         // ...
     }
     
@@ -106,7 +107,7 @@ void ParticleSystem::Update(float dt)
     for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); it++)
     {
         Particle* p = *it;
-		p->currentTime += dt;
+        p->currentTime += dt;
         p->billboard.position += p->velocity * dt;
         
         // @TODO 6 - Update each particle parameters
@@ -119,29 +120,32 @@ void ParticleSystem::Update(float dt)
         // Phase 1 - Initial: from t = [0, fadeInTime] - Linearly interpolate between initial color and mid color
         // Phase 2 - Mid:     from t = [fadeInTime, lifeTime - fadeOutTime] - color is mid color
         // Phase 3 - End:     from t = [lifeTime - fadeOutTime, lifeTime]
-                
+        
         
         // ...
         float delta;
         
         p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
         
-        if (p->currentTime <= mpDescriptor->fadeInTime) {
+        if (p -> currentTime <= mpDescriptor->fadeInTime && p->currentTime > 0)
+        {
             delta = ((p->currentTime - 0)/(mpDescriptor->fadeInTime - 0));
             p->billboard.color = glm::mix(mpDescriptor->initialColor, mpDescriptor->midColor, delta);
-        } else if (p->currentTime <= mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime ) {
-            delta = (p -> currentTime - mpDescriptor -> fadeInTime/((mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime) - mpDescriptor->fadeInTime));
+        }
+        else if (p->currentTime >= mpDescriptor->fadeInTime && p->currentTime < (mpDescriptor->fadeOutTime))
+        {
             p->billboard.color = mpDescriptor->midColor;
-            
-        } else {
-            delta = ((p->currentTime - (mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime))/(mpDescriptor->totalLifetime - (mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime)));
-            p->billboard.color = glm::mix(mpDescriptor->initialColor, mpDescriptor->midColor, delta);
+        }
+        else if (p->currentTime < (mpDescriptor->totalLifetime - mpDescriptor->fadeOutTime) && p->currentTime < mpDescriptor->totalLifetime)
+        {
+            delta = (p->currentTime - mpDescriptor->fadeOutTime)/(mpDescriptor->totalLifetime-mpDescriptor->fadeOutTime);
+            p->billboard.color = glm::mix(mpDescriptor->initialColor,mpDescriptor->midColor,delta);
             
         }
-            // ...
+        // ...
         p->velocity += mpDescriptor->acceleration * dt;
         p->billboard.size += mpDescriptor->sizeGrowthVelocity * dt;
-
+        
         // Do not touch code below...
         
         // Particles are destroyed if expired
